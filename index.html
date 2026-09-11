@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Hellow! 🎉</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        /* Floating Decoration Background */
+        .heart {
+            position: absolute;
+            color: rgba(255, 118, 117, 0.6);
+            font-size: 24px;
+            animation: floatUp 5s infinite linear;
+            bottom: -50px;
+        }
+        .h1 { left: 10%; animation-delay: 0s; font-size: 20px; }
+        .h2 { left: 30%; animation-delay: 1.5s; font-size: 30px; }
+        .h3 { left: 55%; animation-delay: 0.8s; font-size: 25px; }
+        .h4 { left: 75%; animation-delay: 2.3s; font-size: 35px; }
+        .h5 { left: 90%; animation-delay: 3.1s; font-size: 18px; }
+
+        /* Welcome/Gift Screen Layer */
+        #gift-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fab1a0, #ffeaa7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        .gift-box {
+            font-size: 7rem;
+            animation: wobble 1s infinite ease-in-out;
+        }
+
+        .gift-hint {
+            color: #d63031;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 🎥 INILIPAT: Mas binaba pa sa tapat ng Sis Joda name track */
+        .birthday-video {
+            position: absolute;
+            bottom: 75px;         /* Binaba mula 160px para sumakto sa ibaba ng card at tapat ng pangalan */
+            right: 15px;
+            width: 140px;         /* Ginawang 140px para mas sakto at hindi masyadong malaki sa mobile */
+            height: auto;
+            border-radius: 12px;  
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            z-index: 50;          /* Nasa ibabaw ng lahat para hindi matakpan ng text */
+            border: 3px solid white;
+            opacity: 0;           
+            transform: scale(0.8);
+            transition: all 0.5s ease-in-out;
+            pointer-events: none; 
+        }
+
+        /* Lalabas ang video kapag binuksan ang regalo */
+        .birthday-video.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto; 
+        }
+
+        /* The Main Birthday Card */
+        .card {
+            background: white;
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 80%;
+            z-index: 10;
+            animation: bounce 3s infinite ease-in-out;
+            margin-bottom: 80px; 
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            color: #d63031;
+            font-size: 2.3rem;
+            margin: 0;
+        }
+
+        .confetti-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 2.5rem;
+            margin: 12px 0;
+        }
+
+        .confetti-container span {
+            display: inline-block;
+            animation: popAndShake 0.6s infinite ease-in-out;
+        }
+
+        .confetti-container span:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        p {
+            color: #2d3436;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-top: 15px;
+        }
+
+        .cake {
+            font-size: 4.5rem;
+            animation: pulse 1.5s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        /* Container ng Pangalan sa Baba */
+        .moving-name {
+            position: absolute;
+            bottom: 90px; 
+            width: 100%;
+            overflow: hidden;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .moving-name.show {
+            opacity: 1;
+        }
+
+        .moving-name .track {
+            display: flex;
+            white-space: nowrap;
+            gap: 50px;
+            animation: loopRight 4s linear infinite;
+        }
+
+        .moving-name span {
+            animation: rainbowBlink 0.33s infinite linear;
+        }
+
+        /* Animations */
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-8deg) scale(1.05); }
+            75% { transform: rotate(8deg) scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes loopRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        @keyframes rainbowBlink {
+            0% { color: #ff7675; }
+            16% { color: #ffeaa7; }
+            33% { color: #55efc4; }
+            50% { color: #81ecec; }
+            66% { color: #a29bfe; }
+            83% { color: #fd79a8; }
+            100% { color: #ff7675; }
+        }
+
+        @keyframes popAndShake {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.3) rotate(15deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Haharang na Gift Screen sa simula -->
+    <div id="gift-screen" onclick="openGift()">
+        <div class="gift-box">🎁</div>
+        <div class="gift-hint">May regalo ka! Pindutin mo 'to... 🤫</div>
+    </div>
+
+    <!-- Background items -->
+    <div class="heart h1">❤️</div>
+    <div class="heart h2">🎈</div>
+    <div class="heart h3">✨</div>
+    <div class="heart h4">❤️</div>
+    <div class="heart h5">🎈</div>
+
+    <!-- 🎥 Maliit na Video Player -->
+    <video class="birthday-video" id="bday-vid" controls loop>
+        <source src="video-mo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Gitnang Birthday Card -->
+    <div class="card" id="main-card">
+        <div class="cake">🎂</div>
+        <h1>Happy Birthday</h1>
+        
+        <div class="confetti-container">
+            <span>🎉</span>
+            <span>🎉</span>
+        </div>
+
+        <p>Ipagdiwang ang iyong espesyal na araw! Sana ay matupad lahat ng mga pangarap mo.</p>
+    </div>
+
+    <!-- Pangalan sa baba -->
+    <div class="moving-name" id="bottom-name">
+        <div class="track">
+            <span>Sis Joda</span>
+            <span>Sis Joda</span>
+            <span>Sis Joda</span>
+            <span>Sis Joda</span>
+        </div>
+    </div>
+
+    <!-- JavaScript para sa Video at Screen Layer Change -->
+    <script>
+        function openGift() {
+            var video = document.getElementById("bday-vid");
+            video.play().catch(function(error) {
+                console.log("Video play failed: ", error);
+            });
+
+            var giftScreen = document.getElementById("gift-screen");
+            giftScreen.style.opacity = "0";
+            
+            setTimeout(function() {
+                giftScreen.style.visibility = "hidden";
+            }, 500);
+
+            document.getElementById("main-card").classList.add("show");
+            document.getElementById("bottom-name").classList.add("show");
+            video.classList.add("show"); 
+        }
+    </script>
+
+</body>
+</html>
